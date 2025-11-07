@@ -11,7 +11,24 @@ A terminal-based user interface for managing and launching Minecraft instances t
 
 ## Installation
 
-### From Source
+### Quick Install (Recommended)
+
+```bash
+# Clone the repository
+git clone git@github.com:KamiSenpai64/minecraft-tui.git
+cd minecraft-tui
+
+# Run the install script
+./install.sh
+```
+
+The install script will:
+- Build the release binary
+- Copy the launch script to `~/scripts`
+- Install the binary to `~/.local/bin`
+- Check for required dependencies
+
+### Manual Installation
 
 ```bash
 # Clone the repository
@@ -21,11 +38,9 @@ cd minecraft-tui
 # Build the release binary
 cargo build --release
 
-# Create the launch script directory
-mkdir -p ~/scripts
-
 # Copy the launch script
-cp ~/scripts/launch-minecraft.sh ~/scripts/launch-minecraft.sh
+mkdir -p ~/scripts
+cp scripts/launch-minecraft.sh ~/scripts/
 chmod +x ~/scripts/launch-minecraft.sh
 
 # Run the application
@@ -63,6 +78,10 @@ minecraft-tui
 - `Backspace` - Delete search query character (in search mode)
 - `Esc` - Exit search mode (when searching)
 
+## Preview
+
+Screenshots and demo GIFs coming soon! Run `minecraft-tui` to see it in action.
+
 ## Implemented Features
 
 1. [x] **View All Instances** - Display all PrismLauncher instances with metadata
@@ -70,21 +89,27 @@ minecraft-tui
 3. [x] **Keyboard Navigation** - Navigate with arrow keys or vim-style (j/k)
 4. [x] **Display Metadata** - Show playtime and last played information
 5. [x] **Minecraft Version Display** - Show MC version next to instance name
-6. [x] **Open Instance Folder** - Quick access to instance directory
-7. [x] **Multiple Sort Modes** - Sort by name, last played, or total playtime
-8. [x] **Real-time Search/Filter** - Filter instances as you type
-9. [x] **Instance Details Panel** - View comprehensive details in split view
-10. [x] **Running Status Indicator** - Visual indicator for active instances
+6. [x] **Mod Loader Detection** - Detect and display mod loader (Fabric, Forge, Quilt, NeoForge, Vanilla)
+7. [x] **Open Instance Folder** - Quick access to instance directory
+8. [x] **Multiple Sort Modes** - Sort by name, last played, or total playtime
+9. [x] **Real-time Search/Filter** - Filter instances as you type
+10. [x] **Instance Details Panel** - View comprehensive details in split view with mod count
+11. [x] **Running Status Indicator** - Visual indicator for active instances
+12. [x] **Automated CI/CD** - GitHub Actions for building and testing
+13. [x] **Unit Tests** - Test coverage for core functionality
+14. [x] **Easy Installation** - One-command install script
 
 ## Upcoming Features
 
-11. [ ] **Refresh Instances** - Reload instance list without restarting
-12. [ ] **Show Mod Count** - Display number of installed mods per instance
-13. [ ] **Favorites System** - Pin favorite instances to the top
-14. [ ] **Multiple Instance Launch** - Select and launch multiple instances
-15. [ ] **Configuration File** - Save user preferences and settings
-16. [ ] **Theme Support** - Customizable color schemes
-17. [ ] **Launch History** - Track and display launch history
+15. [ ] **Refresh Instances** - Reload instance list without restarting (press 'r')
+16. [ ] **Favorites System** - Pin favorite instances to the top
+17. [ ] **Multiple Instance Launch** - Select and launch multiple instances
+18. [ ] **Configuration File** - Save user preferences and settings
+19. [ ] **Theme Support** - Customizable color schemes
+20. [ ] **Launch History** - Track and display launch history
+21. [ ] **Java Version Display** - Show which Java version each instance uses
+22. [ ] **World Count** - Display number of worlds per instance
+23. [ ] **Multi-Launcher Support** - Support for MultiMC, ATLauncher, etc.
 
 ## Project Structure
 
