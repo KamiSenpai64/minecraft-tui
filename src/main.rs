@@ -56,6 +56,7 @@ struct Instance {
     time_played: Option<String>,
     time_played_secs: Option<u64>,
     mc_version: Option<String>,
+    mod_loader: Option<String>,
 }
 
 fn is_instance_running(instance_name: &str) -> bool {
@@ -293,21 +294,43 @@ fn load_instances() -> Result<Vec<Instance>> {
                         let time_played_secs = config.general.total_time_played;
                         let time_played = time_played_secs.map(format_duration);
 
-                        // Try to get Minecraft version from mmc-pack.json
-                        let mc_version = path.join("mmc-pack.json")
-                            .exists()
-                            .then(|| {
-                                fs::read_to_string(path.join("mmc-pack.json"))
-                                    .ok()
-                                    .and_then(|content| serde_json::from_str::<MMCPack>(&content).ok())
-                                    .and_then(|pack| {
-                                        pack.components
-                                            .iter()
-                                            .find(|c| c.uid == "net.minecraft")
-                                            .and_then(|c| c.version.clone())
-                                    })
-                            })
-                            .flatten();
+                        // Try to get Minecraft version and mod loader from mmc-pack.json
+                        let mut mc_version = None;
+                        let mut mod_loader = None;
+
+                        if path.join("mmc-pack.json").exists() {
+                            if let Ok(content) = fs::read_to_string(path.join("mmc-pack.json")) {
+                                if let Ok(pack) = serde_json::from_str::<MMCPack>(&content) {
+                                    // Get Minecraft version
+                                    mc_version = pack.components
+                                        .iter()
+                                        .find(|c| c.uid == "net.minecraft")
+                                        .and_then(|c| c.version.clone());
+
+                                    // Detect mod loader
+                                    for component in &pack.components {
+                                        if component.uid.contains("fabric") {
+                                            mod_loader = Some("Fabric".to_string());
+                                            break;
+                                        } else if component.uid.contains("forge") {
+                                            mod_loader = Some("Forge".to_string());
+                                            break;
+                                        } else if component.uid.contains("quilt") {
+                                            mod_loader = Some("Quilt".to_string());
+                                            break;
+                                        } else if component.uid.contains("neoforge") {
+                                            mod_loader = Some("NeoForge".to_string());
+                                            break;
+                                        }
+                                    }
+
+                                    // If no mod loader found, it's vanilla
+                                    if mod_loader.is_none() {
+                                        mod_loader = Some("Vanilla".to_string());
+                                    }
+                                }
+                            }
+                        }
 
                         instances.push(Instance {
                             name: config.general.name,
@@ -317,6 +340,7 @@ fn load_instances() -> Result<Vec<Instance>> {
                             time_played,
                             time_played_secs,
                             mc_version,
+                            mod_loader,
                         });
                     }
                 }
@@ -712,6 +736,13 @@ fn render_details(f: &mut Frame, area: Rect, app: &App) {
                 ]));
             }
 
+            if let Some(ref loader) = instance.mod_loader {
+                details_lines.push(Line::from(vec![
+                    Span::styled("Mod Loader: ", Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)),
+                    Span::raw(loader),
+                ]));
+            }
+
             details_lines.push(Line::from("")); // Blank line
 
             details_lines.push(Line::from(vec![
@@ -784,4 +815,39 @@ fn render_details(f: &mut Frame, area: Rect, app: &App) {
                 .title(" Instance Details ")
         );
     f.render_widget(message, area);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_format_duration_hours() {
+        assert_eq!(format_duration(3661), "1h 1m");
+    }
+
+    #[test]
+    fn test_format_duration_minutes() {
+        assert_eq!(format_duration(120), "2m");
+    }
+
+    #[test]
+    fn test_format_duration_seconds() {
+        assert_eq!(format_duration(45), "45s");
+    }
+
+    #[test]
+    fn test_sort_mode_cycle() {
+        let mode = SortMode::Name;
+        assert_eq!(mode.next(), SortMode::LastPlayed);
+        assert_eq!(mode.next().next(), SortMode::Playtime);
+        assert_eq!(mode.next().next().next(), SortMode::Name);
+    }
+
+    #[test]
+    fn test_sort_mode_display() {
+        assert_eq!(SortMode::Name.display(), "Name");
+        assert_eq!(SortMode::LastPlayed.display(), "Last Played");
+        assert_eq!(SortMode::Playtime.display(), "Playtime");
+    }
 }
