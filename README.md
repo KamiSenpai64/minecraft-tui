@@ -1,6 +1,6 @@
 # Minecraft TUI
 
-![GIF of the application](https://github.com/KamiSenpai64/minecraft-tui/blob/master/untitled.GIF)
+![GIF of the application](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNThrYWwxazBrNWh5d3E2OTVmejVrdnB1cjdsMHZxbjhld2pjNXRyYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8UY5okxFuO0LO0Upxr/giphy.gif)
 
 A terminal-based user interface for managing and launching Minecraft instances through PrismLauncher. Built with Rust and Ratatui for a fast, keyboard-driven experience.
 
