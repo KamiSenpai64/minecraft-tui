@@ -150,6 +150,9 @@ If no instances appear:
 The running status check uses `ps aux` to detect active Minecraft processes. If it's not working:
 - Verify processes are visible: `ps aux | grep flatpak | grep PrismLauncher`
 
+### Releases
+The reccomended way of using minecraft-tui is downloading the latest release, as it does not have the README.md file, LICENSE file, etc.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit issues or pull requests.
